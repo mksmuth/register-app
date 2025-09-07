@@ -78,11 +78,21 @@ pipeline {
 		   }
 		}
 		stage("CD pipeline trigger") {
-            steps {
-                script {
-                    sh "curl -v -k --user clouduser:${JENKINS_TOKEN} -X POST -H 'cache-control: no-cache' -H 'content-type: application/x-www-form-urlencoded' --data 'IMAGE_TAG=${IMAGE_TAG}' 'ec2-44-220-149-40.compute-1.amazonaws.com/job/gitops-register-app-cd/buildWithParameters?token=gitops-token'"
-                }
-            }
-       }
+    steps {
+        script {
+            echo "Triggering CD pipeline with IMAGE_TAG=${IMAGE_TAG}"
+            sh """
+                curl -v -k --user clouduser:${JENKINS_TOKEN} \
+                     -X POST \
+                     -H 'cache-control: no-cache' \
+                     -H 'content-type: application/x-www-form-urlencoded' \
+                     --data-urlencode "IMAGE_TAG=${IMAGE_TAG}" \
+                     'https://ec2-44-220-149-40.compute-1.amazonaws.com/job/gitops-register-app-cd/buildWithParameters?token=gitops-token'
+            """
+           }
+         }
+      }
 	}
 }
+		
+
