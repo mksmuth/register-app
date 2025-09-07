@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'jenkins-agent-key' }
+    agent { label 'jenkins-agent' }
     tools {
         jdk 'Java17'
         maven 'Maven-3'
