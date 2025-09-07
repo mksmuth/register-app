@@ -65,7 +65,7 @@ pipeline {
 		stage("Trivy Scan") {
            steps {
                script {
-	            sh ('docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image muthukumar001/register-app-pipeline:latest --no-progress --scanners vuln  --exit-code 0 --severity HIGH,CRITICAL --format table')
+	            sh ('docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image muthukumar001/register-app-pipeline:latest --no-progress --scanners vuln  --exit-code 1 --severity HIGH,CRITICAL --format table')
                }
            }
        }
@@ -77,21 +77,13 @@ pipeline {
 			   }
 		   }
 		}
-		stage("CD pipeline trigger") {
-    steps {
-        script {
-            echo "Triggering CD pipeline with IMAGE_TAG=${IMAGE_TAG}"
-            sh """
-                curl -v -k --user clouduser:${JENKINS_TOKEN} \
-                     -X POST \
-                     -H 'cache-control: no-cache' \
-                     -H 'content-type: application/x-www-form-urlencoded' \
-                     --data-urlencode "IMAGE_TAG=${IMAGE_TAG}" \
-                     'https://ec2-3-80-114-231.compute-1.amazonaws.com/job/gitops-register-app-cd/buildWithParameters?token=gitops-token'
-            """
-           }
-         }
-      }
+	 stage("Trigger CD Pipeline") {
+            steps {
+                script {
+                    sh "curl -v -k --user clouduser:${JENKINS_TOKEN} -X POST -H 'cache-control: no-cache' -H 'content-type: application/x-www-form-urlencoded' --data 'IMAGE_TAG=${IMAGE_TAG}' 'ec2-3-80-114-231.compute-1.amazonaws.com:8080/job/gitops-register-app-cd/buildWithParameters?token=gitops-token'"
+                }
+            }
+       }
 	}
 }
 		
