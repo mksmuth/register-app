@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'jenkins-agent-key' }
+    agent { label 'jenkins-agent' }
     tools {
         jdk 'Java17'
         maven 'Maven-3'
@@ -77,21 +77,13 @@ pipeline {
 			   }
 		   }
 		}
-		stage("CD pipeline trigger") {
-    steps {
-        script {
-            echo "Triggering CD pipeline with IMAGE_TAG=${IMAGE_TAG}"
-            sh """
-                curl -v -k --user clouduser:${JENKINS_TOKEN} \
-                     -X POST \
-                     -H 'cache-control: no-cache' \
-                     -H 'content-type: application/x-www-form-urlencoded' \
-                     --data-urlencode "IMAGE_TAG=${IMAGE_TAG}" \
-                     'https://ec2-44-220-149-40.compute-1.amazonaws.com/job/gitops-register-app-cd/buildWithParameters?token=gitops-token'
-            """
-           }
-         }
-      }
+	 stage("Trigger CD Pipeline") {
+            steps {
+                script {
+                    sh "curl -v -k --user clouduser:${JENKINS_TOKEN} -X POST -H 'cache-control: no-cache' -H 'content-type: application/x-www-form-urlencoded' --data 'IMAGE_TAG=${IMAGE_TAG}' 'ec2-54-163-58-227.compute-1.amazonaws.com:8080/job/gitops-register-app-cd/buildWithParameters?token=gitops-token'"
+                }
+            }
+       }
 	}
 }
 		
