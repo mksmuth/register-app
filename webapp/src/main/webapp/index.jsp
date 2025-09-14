@@ -3,7 +3,7 @@
     <h1>New user Register for DevOps course by muthumuarasamy s  
 
 </h1>
-    <p>Please fill in this form to create an account.</p>
+    <p>Please fill in this form to create an student account.</p>
     <hr>
 
      
