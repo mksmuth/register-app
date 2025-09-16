@@ -30,7 +30,8 @@ pipeline {
 
         stage("Build Application"){
             steps {
-                sh "mvn clean package"
+                sh "mvn -f Boardgame-main/pom.xml clean package"
+
             }
 
        }
@@ -54,7 +55,7 @@ pipeline {
                 script {
                     docker.withRegistry('https://index.docker.io/v1/',DOCKER_PASS) {
 						def
-                        docker_image = docker.build ("${IMAGE_NAME}")
+                        docker_image = docker.build ("${IMAGE_NAME}", "Boardgame-main/")
         
                         docker_image.push("${IMAGE_TAG}")
                         docker_image.push('latest')
